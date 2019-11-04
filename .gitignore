@@ -1,0 +1,11 @@
+.idea/
+*.class
+target/
+*.iml
+bin/
+.project
+.settings/
+.classpath
+temp/
+out/
+src/main/resources/META-INF/
