@@ -5,14 +5,10 @@ import ch.ethz.systems.floodns.ext.basicsim.topology.Topology;
 import ch.ethz.systems.floodns.ext.logger.file.FileLoggerFactory;
 import ch.ethz.systems.floodns.ext.basicsim.schedule.Schedule;
 import ch.ethz.systems.floodns.ext.routing.KspRoutingStrategy;
-import ch.ethz.systems.floodns.ext.routing.RoutingStrategy;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -52,7 +48,7 @@ public class KSP_ONE {
         @Override
         protected void trigger() {
             List<Link> linksBetween = simulator.getNetwork().getPresentLinksBetween(from, to);
-            if(linksBetween.size() != 1) {
+            if (linksBetween.size() != 1) {
                 System.out.println("ERROR: linksBetween is != 1. It is " + linksBetween.size());
             }
             simulator.updateExistingLink(linksBetween.get(0), newLatency);
@@ -74,7 +70,7 @@ public class KSP_ONE {
         @Override
         protected void trigger() {
             List<Link> linksBetween = simulator.getNetwork().getPresentLinksBetween(from, to);
-            if(linksBetween.size() != 1) {
+            if (linksBetween.size() != 1) {
                 System.out.println("ERROR: linksBetween is != 1. It is " + linksBetween.size());
             }
             simulator.removeExistingLink(linksBetween.get(0));
@@ -87,7 +83,8 @@ public class KSP_ONE {
         private final Topology topology;
         private final Random routingRandom;
 
-        TopologyUpdateEvent(Simulator simulator, int priority, long timeFromNow, Topology topology, Random routingRandom) {
+        TopologyUpdateEvent(Simulator simulator, int priority, long timeFromNow, Topology topology,
+                Random routingRandom) {
             super(simulator, priority, timeFromNow);
             this.topology = topology;
             this.routingRandom = routingRandom;
@@ -95,14 +92,11 @@ public class KSP_ONE {
 
         @Override
         protected void trigger() {
-            System.out.println("Current active flows " + simulator.getNetwork().getActiveFlows().size());
             simulator.getNetwork().finalizeFlows();
-            System.out.println("Current active flows after " + simulator.getNetwork().getActiveFlows().size());
             KspRoutingStrategy routingStrategy = new KspRoutingStrategy(simulator, topology, routingRandom, 1);
-            for(Connection connection : simulator.getActiveConnections()) {
+            for (Connection connection : simulator.getActiveConnections()) {
                 routingStrategy.assignStartFlows(connection);
             }
-            System.out.println("Current active flows after end " + simulator.getNetwork().getActiveFlows().size());
         }
 
     }
@@ -110,18 +104,13 @@ public class KSP_ONE {
     public static List<Event> getAddEvents(Simulator simulator) {
         List<Event> events = new ArrayList<>();
 
-        for (int i = 2; i <= DURATION; i++) {
-            try (BufferedReader br = new BufferedReader(
-                    new FileReader("/home/manuelgr/OneDrive/Master Thesis/Simulators/FloodNS/topologies/add_" + i + ".properties"))
-            ) {
+        for (int i = 1; i < DURATION; i++) {
+            try (BufferedReader br = new BufferedReader(new FileReader(
+                    "/home/manuelgr/OneDrive/Master Thesis/Simulators/FloodNS/topologies/add_" + i + ".properties"))) {
                 String line;
                 while ((line = br.readLine()) != null) {
                     String[] split_line = line.split("-");
-                    AddEvent event = new AddEvent(
-                            simulator,
-                            10,
-                            (long) (i - 1) * (long) 1e9,
-                            Integer.parseInt(split_line[0]),
+                    AddEvent event = new AddEvent(simulator, 10, (long) i * (long) 1e9, Integer.parseInt(split_line[0]),
                             Integer.parseInt(split_line[1]));
                     events.add(event);
                 }
@@ -136,19 +125,15 @@ public class KSP_ONE {
     public static List<Event> getUpdateEvents(Simulator simulator) {
         List<Event> events = new ArrayList<>();
 
-        for (int i = 2; i <= DURATION; i++) {
+        for (int i = 1; i < DURATION; i++) {
             try (BufferedReader br = new BufferedReader(
-                    new FileReader("/home/manuelgr/OneDrive/Master Thesis/Simulators/FloodNS/topologies/update_" + i + ".properties"))
-            ) {
+                    new FileReader("/home/manuelgr/OneDrive/Master Thesis/Simulators/FloodNS/topologies/update_" + i
+                            + ".properties"))) {
                 String line;
                 while ((line = br.readLine()) != null) {
                     String[] split_line = line.split("-");
-                    UpdateEvent event = new UpdateEvent(
-                            simulator,
-                            10,
-                            (long) (i - 1) * (long) 1e9,
-                            Integer.parseInt(split_line[0]),
-                            Integer.parseInt(split_line[1]),
+                    UpdateEvent event = new UpdateEvent(simulator, 10, (long) i * (long) 1e9,
+                            Integer.parseInt(split_line[0]), Integer.parseInt(split_line[1]),
                             Double.parseDouble(split_line[2]));
                     events.add(event);
                 }
@@ -163,19 +148,15 @@ public class KSP_ONE {
     public static List<Event> getRemoveEvents(Simulator simulator) {
         List<Event> events = new ArrayList<>();
 
-        for (int i = 2; i <= DURATION; i++) {
+        for (int i = 1; i < DURATION; i++) {
             try (BufferedReader br = new BufferedReader(
-                    new FileReader("/home/manuelgr/OneDrive/Master Thesis/Simulators/FloodNS/topologies/remove_" + i + ".properties"))
-            ) {
+                    new FileReader("/home/manuelgr/OneDrive/Master Thesis/Simulators/FloodNS/topologies/remove_" + i
+                            + ".properties"))) {
                 String line;
                 while ((line = br.readLine()) != null) {
                     String[] split_line = line.split("-");
-                    RemoveEvent event = new RemoveEvent(
-                            simulator,
-                            10,
-                            (long) (i - 1) * (long) 1e9,
-                            Integer.parseInt(split_line[0]),
-                            Integer.parseInt(split_line[1]));
+                    RemoveEvent event = new RemoveEvent(simulator, 10, (long) i * (long) 1e9,
+                            Integer.parseInt(split_line[0]), Integer.parseInt(split_line[1]));
                     events.add(event);
                 }
             } catch (Exception e) {
@@ -189,12 +170,8 @@ public class KSP_ONE {
     public static List<Event> getTopologyUpdateEvents(Simulator simulator, Topology topology, Random routingRandom) {
         List<Event> events = new ArrayList<>();
 
-        for (int i = 2; i <= DURATION; i++) {
-            TopologyUpdateEvent event = new TopologyUpdateEvent(
-                    simulator,
-                    0,
-                    (long) (i - 1) * (long) 1e9,
-                    topology,
+        for (int i = 1; i < DURATION; i++) {
+            TopologyUpdateEvent event = new TopologyUpdateEvent(simulator, 0, (long) i * (long) 1e9, topology,
                     routingRandom);
             events.add(event);
         }
@@ -208,10 +185,9 @@ public class KSP_ONE {
 
         // Fat-tree topology
         Topology topology = FileToTopologyConverter.convert(
-                "/home/manuelgr/OneDrive/Master Thesis/Simulators/FloodNS/topologies/satellite_constellation_1.properties",
+                "/home/manuelgr/OneDrive/Master Thesis/Simulators/FloodNS/topologies/satellite_constellation.properties",
                 20, // 20 flow units / time unit ("bit/ns")
-                true
-        );
+                true);
         Network network = topology.getNetwork();
 
         // Create simulator
@@ -226,8 +202,7 @@ public class KSP_ONE {
         // Traffic
         Schedule schedule = new Schedule(
                 "/home/manuelgr/OneDrive/Master Thesis/Simulators/FloodNS/topologies/trafficSchedule.properties",
-                topology,
-                (long) DURATION * (long) 1e9);
+                topology, (long) DURATION * (long) 1e9);
         simulator.insertEvents(schedule.getConnectionStartEvents(simulator, routingStrategy));
 
         simulator.insertEvents(getAddEvents(simulator));
@@ -235,7 +210,6 @@ public class KSP_ONE {
         simulator.insertEvents(getRemoveEvents(simulator));
 
         simulator.insertEvents(getTopologyUpdateEvents(simulator, topology, routingRandom));
-
 
         // Run the simulator
         simulator.run((long) DURATION * (long) 1e9); // 5e9 time units ("ns")
