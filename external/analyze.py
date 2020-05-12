@@ -349,6 +349,6 @@ def analyze_node_info():
 # Call analysis functions
 #
 analyze_flow_info()
-analyze_connection_info(0, 10000000000)
+analyze_connection_info(0, 1000000000000000)
 analyze_link_info()
 analyze_node_info()

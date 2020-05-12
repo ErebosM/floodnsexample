@@ -13,7 +13,8 @@ import java.util.List;
 import java.util.Random;
 
 public class KSP_ONE {
-    public static final int DURATION = 5;
+    public static final int DURATION = 60;
+    public static final int KSP_K = 1;
 
     private static class AddEvent extends Event {
         private final int from;
@@ -93,7 +94,7 @@ public class KSP_ONE {
         @Override
         protected void trigger() {
             simulator.getNetwork().finalizeFlows();
-            KspRoutingStrategy routingStrategy = new KspRoutingStrategy(simulator, topology, routingRandom, 1);
+            KspRoutingStrategy routingStrategy = new KspRoutingStrategy(simulator, topology, routingRandom, KSP_K);
             for (Connection connection : simulator.getActiveConnections()) {
                 routingStrategy.assignStartFlows(connection);
             }
@@ -101,12 +102,13 @@ public class KSP_ONE {
 
     }
 
-    public static List<Event> getAddEvents(Simulator simulator) {
+    public static List<Event> getAddEvents(Simulator simulator, String folderPath) {
         List<Event> events = new ArrayList<>();
 
         for (int i = 1; i < DURATION; i++) {
-            try (BufferedReader br = new BufferedReader(new FileReader(
-                    "/home/manuelgr/OneDrive/Master Thesis/Simulators/FloodNS/topologies/add_" + i + ".properties"))) {
+            try (BufferedReader br = new BufferedReader(
+                    new FileReader("/home/manuelgr/OneDrive/Master Thesis/Simulators/FloodNS/topologies" + folderPath
+                            + "/add_" + i + ".properties"))) {
                 String line;
                 while ((line = br.readLine()) != null) {
                     String[] split_line = line.split("-");
@@ -122,13 +124,13 @@ public class KSP_ONE {
         return events;
     }
 
-    public static List<Event> getUpdateEvents(Simulator simulator) {
+    public static List<Event> getUpdateEvents(Simulator simulator, String folderPath) {
         List<Event> events = new ArrayList<>();
 
         for (int i = 1; i < DURATION; i++) {
             try (BufferedReader br = new BufferedReader(
-                    new FileReader("/home/manuelgr/OneDrive/Master Thesis/Simulators/FloodNS/topologies/update_" + i
-                            + ".properties"))) {
+                    new FileReader("/home/manuelgr/OneDrive/Master Thesis/Simulators/FloodNS/topologies" + folderPath
+                            + "/update_" + i + ".properties"))) {
                 String line;
                 while ((line = br.readLine()) != null) {
                     String[] split_line = line.split("-");
@@ -145,13 +147,13 @@ public class KSP_ONE {
         return events;
     }
 
-    public static List<Event> getRemoveEvents(Simulator simulator) {
+    public static List<Event> getRemoveEvents(Simulator simulator, String folderPath) {
         List<Event> events = new ArrayList<>();
 
         for (int i = 1; i < DURATION; i++) {
             try (BufferedReader br = new BufferedReader(
-                    new FileReader("/home/manuelgr/OneDrive/Master Thesis/Simulators/FloodNS/topologies/remove_" + i
-                            + ".properties"))) {
+                    new FileReader("/home/manuelgr/OneDrive/Master Thesis/Simulators/FloodNS/topologies" + folderPath
+                            + "/remove_" + i + ".properties"))) {
                 String line;
                 while ((line = br.readLine()) != null) {
                     String[] split_line = line.split("-");
@@ -180,40 +182,45 @@ public class KSP_ONE {
     }
 
     public static void main(String[] args) {
-        // Random number generators
-        Random routingRandom = new Random(4839252);
+        for (int i = 50; i <= 50; i += 5) {
+            String folderPath = "/topo_" + i + "Tbit_" + DURATION + "s";
 
-        // Fat-tree topology
-        Topology topology = FileToTopologyConverter.convert(
-                "/home/manuelgr/OneDrive/Master Thesis/Simulators/FloodNS/topologies/satellite_constellation.properties",
-                20, // 20 flow units / time unit ("bit/ns")
-                true);
-        Network network = topology.getNetwork();
+            // Random number generators
+            Random routingRandom = new Random(4839252);
 
-        // Create simulator
-        Simulator simulator = new Simulator();
-        FileLoggerFactory loggerFactory = new FileLoggerFactory(simulator, "temp/ksp" + 1);
-        Aftermath aftermath = new SimpleMmfAllocator(simulator, network);
-        simulator.setup(network, aftermath, loggerFactory);
+            // Fat-tree topology
+            Topology topology = FileToTopologyConverter.convert(
+                    "/home/manuelgr/OneDrive/Master Thesis/Simulators/FloodNS/topologies" + folderPath
+                            + "/satellite_constellation.properties",
+                    20, // 20 flow units / time unit ("bit/ns")
+                    100, // 100 flow units / time unit ("bit/ns")
+                    true);
+            Network network = topology.getNetwork();
 
-        // Routing
-        KspRoutingStrategy routingStrategy = new KspRoutingStrategy(simulator, topology, routingRandom, 1);
+            // Create simulator
+            Simulator simulator = new Simulator();
+            FileLoggerFactory loggerFactory = new FileLoggerFactory(simulator, "temp" + folderPath);
+            Aftermath aftermath = new SimpleMmfAllocator(simulator, network);
+            simulator.setup(network, aftermath, loggerFactory);
 
-        // Traffic
-        Schedule schedule = new Schedule(
-                "/home/manuelgr/OneDrive/Master Thesis/Simulators/FloodNS/topologies/trafficSchedule.properties",
-                topology, (long) DURATION * (long) 1e9);
-        simulator.insertEvents(schedule.getConnectionStartEvents(simulator, routingStrategy));
+            // Routing
+            KspRoutingStrategy routingStrategy = new KspRoutingStrategy(simulator, topology, routingRandom, KSP_K);
 
-        simulator.insertEvents(getAddEvents(simulator));
-        simulator.insertEvents(getUpdateEvents(simulator));
-        simulator.insertEvents(getRemoveEvents(simulator));
+            // Traffic
+            Schedule schedule = new Schedule("/home/manuelgr/OneDrive/Master Thesis/Simulators/FloodNS/topologies"
+                    + folderPath + "/trafficSchedule.properties", topology, (long) DURATION * (long) 1e9);
+            simulator.insertEvents(schedule.getConnectionStartEvents(simulator, routingStrategy));
 
-        simulator.insertEvents(getTopologyUpdateEvents(simulator, topology, routingRandom));
+            simulator.insertEvents(getAddEvents(simulator, folderPath));
+            simulator.insertEvents(getUpdateEvents(simulator, folderPath));
+            simulator.insertEvents(getRemoveEvents(simulator, folderPath));
 
-        // Run the simulator
-        simulator.run((long) DURATION * (long) 1e9); // 5e9 time units ("ns")
-        loggerFactory.runCommandOnLogFolder("python external/analyze.py");
+            simulator.insertEvents(getTopologyUpdateEvents(simulator, topology, routingRandom));
+
+            // Run the simulator
+            simulator.run((long) DURATION * (long) 1e9); // 5e9 time units ("ns")
+            loggerFactory.runCommandOnLogFolder("python external/analyze.py");
+        }
 
     }
 }
