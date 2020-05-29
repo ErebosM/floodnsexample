@@ -26,9 +26,12 @@ import numpy as np
 import csv
 import sys
 import os
-
+import statsmodels.api as sm
+import matplotlib.pyplot as plt
 
 # Usage print
+
+
 def print_usage():
     print("floodns python analysis tool v0.01.6")
     print("Usage: python analyze.py /path/to/run/folder")
@@ -352,3 +355,85 @@ analyze_flow_info()
 analyze_connection_info(0, 1000000000000000)
 analyze_link_info()
 analyze_node_info()
+
+
+def get_link_infos():
+    with open(run_folder_path + "/link_info.csv.log") as f:
+        infos = list()
+        for line in f:
+            line = line.rstrip('\n')
+            infos.append(line.split(",")[6])
+        return infos
+
+
+data = np.array([float(i) for i in get_link_infos()])
+ecdf = sm.distributions.ECDF(data)
+plt.plot(ecdf.x, ecdf.y)
+
+plt.xlabel('link utilization')
+plt.ylabel('CDF')
+
+plt.title('Link utilization')
+plt.legend()
+
+if not os.path.isdir(run_folder_path + "/visualization"):
+    os.mkdir(run_folder_path + "/visualization")
+plt.savefig(run_folder_path + "/visualization/link_utilization.png", dpi=300)
+plt.clf()
+
+
+def get_uplink_infos():
+    with open(run_folder_path + "/link_info.csv.log") as f:
+        infos = list()
+        for line in f:
+            line = line.rstrip('\n')
+            line = line.split(",")
+            if int(line[1]) >= 1700 and int(line[2]) < 1600 or int(line[2]) >= 1700 and int(line[1]) < 1600:
+                infos.append(line[6])
+        return infos
+
+
+data = np.array([float(i) for i in get_uplink_infos()])
+ecdf = sm.distributions.ECDF(data)
+plt.plot(ecdf.x, ecdf.y, label="Uplink")
+
+
+def get_isl_infos():
+    with open(run_folder_path + "/link_info.csv.log") as f:
+        infos = list()
+        for line in f:
+            line = line.rstrip('\n')
+            line = line.split(",")
+            if int(line[1]) < 1600 and int(line[2]) < 1600:
+                infos.append(line[6])
+        return infos
+
+
+data = np.array([float(i) for i in get_isl_infos()])
+ecdf = sm.distributions.ECDF(data)
+plt.plot(ecdf.x, ecdf.y, label="ISL")
+
+
+def get_city_to_groundstation_infos():
+    with open(run_folder_path + "/link_info.csv.log") as f:
+        infos = list()
+        for line in f:
+            line = line.rstrip('\n')
+            line = line.split(",")
+            if(int(line[1]) >= 1700 and int(line[2]) >= 1600 and int(line[2]) < 1700
+                    or int(line[2]) >= 1700 and int(line[1]) >= 1600 and int(line[1]) < 1700):
+                infos.append(line[6])
+        return infos
+
+
+data = np.array([float(i) for i in get_city_to_groundstation_infos()])
+ecdf = sm.distributions.ECDF(data)
+plt.plot(ecdf.x, ecdf.y, label="city_to_groundstation")
+
+plt.xlabel('link utilization')
+plt.ylabel('CDF')
+
+plt.title('Types utilization')
+plt.legend()
+
+plt.savefig(run_folder_path + "/visualization/types_utilization.png", dpi=300)
