@@ -1,13 +1,11 @@
 import ch.ethz.systems.floodns.core.Aftermath;
 import ch.ethz.systems.floodns.core.Network;
 import ch.ethz.systems.floodns.core.Simulator;
-import ch.ethz.systems.floodns.ext.allocator.MaxMinConnBwLpAllocator;
 import ch.ethz.systems.floodns.ext.allocator.SimpleMmfAllocator;
 import ch.ethz.systems.floodns.ext.basicsim.topology.FileToTopologyConverter;
 import ch.ethz.systems.floodns.ext.basicsim.topology.Topology;
 import ch.ethz.systems.floodns.ext.logger.file.FileLoggerFactory;
 import ch.ethz.systems.floodns.ext.basicsim.schedule.Schedule;
-import ch.ethz.systems.floodns.ext.lputils.GlopLpSolver;
 import ch.ethz.systems.floodns.ext.routing.KspRoutingStrategy;
 
 import java.util.Random;
@@ -36,8 +34,6 @@ public class KSP_v3 {
             Simulator simulator = new Simulator();
             FileLoggerFactory loggerFactory = new FileLoggerFactory(simulator, folderPath);
             Aftermath aftermath = new SimpleMmfAllocator(simulator, network);
-            // Aftermath aftermath = new MaxMinConnBwLpAllocator(simulator, network, new
-            // GlopLpSolver("external/glop_solver.py"));
             simulator.setup(network, aftermath, loggerFactory);
 
             // Routing

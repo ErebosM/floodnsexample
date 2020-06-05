@@ -15,23 +15,23 @@ public class KSP_withoutISL {
     public static final int KSP_K = 1;
 
     public static void main(String[] args) {
-        String folderPath = "/topo_" + 20 + "Tbit_" + DURATION + "s_withoutISL";
+        final int DURATION = Integer.parseInt(args[0]);
+        final String RESULTS_FOLDER = args[1];
+        final int KSP_K = Integer.parseInt(args[2]);
+
+        String folderPath = "/home/manuelgr/master_thesis/Simulators/FloodNS/results/" + RESULTS_FOLDER;
 
         // Random number generators
         Random routingRandom = new Random(4839252);
 
         // Fat-tree topology
-        Topology topology = FileToTopologyConverter.convert(
-                "/home/manuelgr/OneDrive/Master Thesis/Simulators/FloodNS/topologies" + folderPath
-                        + "/satellite_constellation.properties",
-                20, // 20 flow units / time unit ("bit/ns")
-                20, // 20 flow units / time unit ("bit/ns")
-                true);
+        Topology topology = FileToTopologyConverter.convert(folderPath + "/topo/satellite_constellation.properties", 20,
+                100, true);
         Network network = topology.getNetwork();
 
         // Create simulator
         Simulator simulator = new Simulator();
-        FileLoggerFactory loggerFactory = new FileLoggerFactory(simulator, "temp" + folderPath);
+        FileLoggerFactory loggerFactory = new FileLoggerFactory(simulator, folderPath);
         Aftermath aftermath = new SimpleMmfAllocator(simulator, network);
         simulator.setup(network, aftermath, loggerFactory);
 
@@ -39,13 +39,14 @@ public class KSP_withoutISL {
         KspRoutingStrategy routingStrategy = new KspRoutingStrategy(simulator, topology, routingRandom, KSP_K);
 
         // Traffic
-        Schedule schedule = new Schedule("/home/manuelgr/OneDrive/Master Thesis/Simulators/FloodNS/topologies"
-                + folderPath + "/trafficSchedule.properties", topology, (long) DURATION * (long) 1e9);
+        Schedule schedule = new Schedule(folderPath + "/topo/trafficSchedule.properties", topology,
+                (long) DURATION * (long) 1e9);
+
         simulator.insertEvents(schedule.getConnectionStartEvents(simulator, routingStrategy));
 
         // Run the simulator
         simulator.run((long) DURATION * (long) 1e9); // 5e9 time units ("ns")
-        loggerFactory.runCommandOnLogFolder("python external/analyze.py");
+        loggerFactory.runCommandOnLogFolder("python3 /home/manuelgr/floodnsexample/external/analyze.py");
 
     }
 
