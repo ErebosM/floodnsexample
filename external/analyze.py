@@ -175,6 +175,11 @@ def analyze_connection_info(lower_threshold, upper_threshold):
                     print("Invalid row: ", row)
                     exit()
 
+        if not fct:
+            fct.append(0)
+        if not completed_throughput:
+            completed_throughput.append(0)
+
         print("Calculating statistics...")
 
         if len(connection_ids) > 0:
