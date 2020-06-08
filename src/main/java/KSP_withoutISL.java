@@ -36,7 +36,8 @@ public class KSP_withoutISL {
         simulator.setup(network, aftermath, loggerFactory);
 
         // Routing
-        KspRoutingStrategy routingStrategy = new KspRoutingStrategy(simulator, topology, routingRandom, KSP_K);
+        KspRoutingStrategy routingStrategy = new KspRoutingStrategy(simulator, topology, routingRandom, KSP_K,
+                folderPath + "/topo/trafficSchedule.properties");
 
         // Traffic
         Schedule schedule = new Schedule(folderPath + "/topo/trafficSchedule.properties", topology,
