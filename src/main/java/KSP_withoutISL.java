@@ -6,6 +6,7 @@ import ch.ethz.systems.floodns.ext.basicsim.topology.FileToTopologyConverter;
 import ch.ethz.systems.floodns.ext.basicsim.topology.Topology;
 import ch.ethz.systems.floodns.ext.logger.file.FileLoggerFactory;
 import ch.ethz.systems.floodns.ext.basicsim.schedule.Schedule;
+import ch.ethz.systems.floodns.ext.routing.KspMultiPathRoutingStrategy;
 import ch.ethz.systems.floodns.ext.routing.KspRoutingStrategy;
 
 import java.util.Random;
@@ -40,8 +41,8 @@ public class KSP_withoutISL {
                 simulator.setup(network, aftermath, loggerFactory);
 
                 // Routing
-                KspRoutingStrategy routingStrategy = new KspRoutingStrategy(simulator, topology, routingRandom, KSP_K,
-                                folderPath + "/topo/trafficSchedule.properties");
+                KspMultiPathRoutingStrategy routingStrategy = new KspMultiPathRoutingStrategy(simulator, topology,
+                                routingRandom, KSP_K, folderPath + "/topo/trafficSchedule.properties");
 
                 // Traffic
                 Schedule schedule = new Schedule(folderPath + "/topo/trafficSchedule.properties", topology,
