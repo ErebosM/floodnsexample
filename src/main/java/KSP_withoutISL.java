@@ -23,7 +23,7 @@ public class KSP_withoutISL {
                 String folderPath = "/home/manuelgr/master_thesis/Simulators/FloodNS/results/" + RESULTS_FOLDER;
 
                 // Random number generators
-                Random routingRandom = new Random(4839252);
+                // Random routingRandom = new Random(4839252);
 
                 // Fat-tree topology
                 int special = 0;
@@ -42,7 +42,7 @@ public class KSP_withoutISL {
 
                 // Routing
                 KspMultiPathRoutingStrategy routingStrategy = new KspMultiPathRoutingStrategy(simulator, topology,
-                                routingRandom, KSP_K, folderPath + "/topo/trafficSchedule.properties");
+                                KSP_K, folderPath + "/topo/trafficSchedule.properties");
 
                 // Traffic
                 Schedule schedule = new Schedule(folderPath + "/topo/trafficSchedule.properties", topology,
