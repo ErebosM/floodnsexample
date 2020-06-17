@@ -93,6 +93,11 @@ def analyze_flow_info():
                 print("Invalid row: ", row)
                 exit()
 
+        if not avg_throughput:
+            avg_throughput.append(0)
+        if not paths_lengths:
+            paths_lengths.append(0)
+
         print("Calculating statistics...")
 
         statistics = {
