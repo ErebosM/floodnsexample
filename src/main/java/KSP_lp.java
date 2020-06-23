@@ -18,13 +18,15 @@ public class KSP_lp {
                 final int KSP_K = Integer.parseInt(args[3]);
                 final int UPDOWN_CAPACITY = Integer.parseInt(args[4]);
                 final int ISL_CAPACITY = Integer.parseInt(args[5]);
+                final int UPPER_SAT_ID = Integer.parseInt(args[6]);
+                final int NUM_CITIES = Integer.parseInt(args[7]);
 
                 String folderPath = "/home/manuelgr/master_thesis/Simulators/FloodNS/" + RESULTS_FOLDER_NAME + "/"
                                 + FOLDER_NAME;
 
                 Topology topology = FileToTopologyConverter.convert(
                                 folderPath + "/topo/satellite_constellation.properties", UPDOWN_CAPACITY, ISL_CAPACITY,
-                                true);
+                                true, UPPER_SAT_ID);
                 Network network = topology.getNetwork();
 
                 // Create simulator
@@ -36,7 +38,7 @@ public class KSP_lp {
 
                 // Routing
                 KspMultiPathRoutingStrategy routingStrategy = new KspMultiPathRoutingStrategy(simulator, topology,
-                                KSP_K);
+                                KSP_K, UPPER_SAT_ID, NUM_CITIES);
 
                 // Traffic
                 Schedule schedule = new Schedule(folderPath + "/topo/trafficSchedule.properties", topology,
@@ -46,7 +48,8 @@ public class KSP_lp {
                 // Run the simulator
                 simulator.run((long) DURATION * (long) 1e9); // 5e9 time units ("ns")
 
-                loggerFactory.runCommandOnLogFolder("python3 /home/manuelgr/floodnsexample/external/analyze.py");
+                loggerFactory.runCommandOnLogFolder("python3 /home/manuelgr/floodnsexample/external/analyze.py",
+                                UPPER_SAT_ID + " " + NUM_CITIES);
         }
 
 }

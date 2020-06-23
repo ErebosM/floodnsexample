@@ -38,7 +38,7 @@ def print_usage():
 
 
 # Check length of arguments
-if len(sys.argv) != 2:
+if len(sys.argv) != 4:
     print("Number of arguments must be exactly two: analyze.py and /path/to/run/folder.")
     print_usage()
     exit()
@@ -391,6 +391,9 @@ if not os.path.isdir(run_folder_path + "/visualization"):
 plt.savefig(run_folder_path + "/visualization/link_utilization.png", dpi=300)
 plt.clf()
 
+UPPER_SAT_ID = int(sys.argv[2])
+NUM_CITIES = int(sys.argv[3])
+
 
 def get_uplink_infos():
     with open(run_folder_path + "/link_info.csv.log") as f:
@@ -398,7 +401,7 @@ def get_uplink_infos():
         for line in f:
             line = line.rstrip('\n')
             line = line.split(",")
-            if int(line[1]) >= 1700 and int(line[2]) < 1600 or int(line[2]) >= 1700 and int(line[1]) < 1600:
+            if int(line[1]) >= UPPER_SAT_ID + NUM_CITIES and int(line[2]) < UPPER_SAT_ID or int(line[2]) >= UPPER_SAT_ID + NUM_CITIES and int(line[1]) < UPPER_SAT_ID:
                 infos.append(line[6])
         return infos
 
@@ -414,7 +417,7 @@ def get_isl_infos():
         for line in f:
             line = line.rstrip('\n')
             line = line.split(",")
-            if int(line[1]) < 1600 and int(line[2]) < 1600:
+            if int(line[1]) < UPPER_SAT_ID and int(line[2]) < UPPER_SAT_ID:
                 infos.append(line[6])
         return infos
 
@@ -430,8 +433,8 @@ def get_city_to_groundstation_infos():
         for line in f:
             line = line.rstrip('\n')
             line = line.split(",")
-            if(int(line[1]) >= 1700 and int(line[2]) >= 1600 and int(line[2]) < 1700
-                    or int(line[2]) >= 1700 and int(line[1]) >= 1600 and int(line[1]) < 1700):
+            if(int(line[1]) >= UPPER_SAT_ID + NUM_CITIES and int(line[2]) >= UPPER_SAT_ID and int(line[2]) < UPPER_SAT_ID + NUM_CITIES
+                    or int(line[2]) >= UPPER_SAT_ID + NUM_CITIES and int(line[1]) >= UPPER_SAT_ID and int(line[1]) < UPPER_SAT_ID + NUM_CITIES):
                 infos.append(line[6])
         return infos
 
