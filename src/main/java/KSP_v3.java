@@ -19,9 +19,12 @@ public class KSP_v3 {
                 final int ISL_CAPACITY = Integer.parseInt(args[5]);
                 final int UPPER_SAT_ID = Integer.parseInt(args[6]);
                 final int NUM_CITIES = Integer.parseInt(args[7]);
+                final String PATH_FILE = args[8];
+                final String ROUTING_TYPE = args[9];
 
                 String folderPath = "/home/manuelgr/master_thesis/Simulators/FloodNS/" + RESULTS_FOLDER_NAME + "/"
                                 + FOLDER_NAME;
+                String path_file = "/home/manuelgr/master_thesis/Simulators/FloodNS/" + PATH_FILE;
 
                 Topology topology = FileToTopologyConverter.convert(
                                 folderPath + "/topo/satellite_constellation.properties", UPDOWN_CAPACITY, ISL_CAPACITY,
@@ -36,7 +39,7 @@ public class KSP_v3 {
 
                 // Routing
                 KspMultiPathRoutingStrategy routingStrategy = new KspMultiPathRoutingStrategy(simulator, topology,
-                                KSP_K, UPPER_SAT_ID, NUM_CITIES);
+                                KSP_K, UPPER_SAT_ID, NUM_CITIES, path_file, ROUTING_TYPE);
 
                 // Traffic
                 Schedule schedule = new Schedule(folderPath + "/topo/trafficSchedule.properties", topology,
