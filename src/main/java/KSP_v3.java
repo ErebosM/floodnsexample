@@ -39,7 +39,7 @@ public class KSP_v3 {
 
                 // Routing
                 KspMultiPathRoutingStrategy routingStrategy = new KspMultiPathRoutingStrategy(simulator, topology,
-                                KSP_K, UPPER_SAT_ID, NUM_CITIES, path_file, ROUTING_TYPE);
+                                KSP_K, UPPER_SAT_ID, NUM_CITIES, path_file, ROUTING_TYPE, folderPath);
 
                 // Traffic
                 Schedule schedule = new Schedule(folderPath + "/topo/trafficSchedule.properties", topology,

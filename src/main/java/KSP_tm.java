@@ -1,15 +1,14 @@
 import ch.ethz.systems.floodns.core.Aftermath;
 import ch.ethz.systems.floodns.core.Network;
 import ch.ethz.systems.floodns.core.Simulator;
-import ch.ethz.systems.floodns.ext.allocator.MaxMinConnBwLpAllocator;
+import ch.ethz.systems.floodns.ext.allocator.TMAllocator;
 import ch.ethz.systems.floodns.ext.basicsim.topology.FileToTopologyConverter;
 import ch.ethz.systems.floodns.ext.basicsim.topology.Topology;
 import ch.ethz.systems.floodns.ext.logger.file.FileLoggerFactory;
 import ch.ethz.systems.floodns.ext.basicsim.schedule.Schedule;
-import ch.ethz.systems.floodns.ext.lputils.GlopLpSolver;
 import ch.ethz.systems.floodns.ext.routing.KspMultiPathRoutingStrategy;
 
-public class KSP_lp {
+public class KSP_tm {
         public static void main(String[] args) {
 
                 final int DURATION = Integer.parseInt(args[0]);
@@ -35,8 +34,7 @@ public class KSP_lp {
                 // Create simulator
                 Simulator simulator = new Simulator(1e-9);
                 FileLoggerFactory loggerFactory = new FileLoggerFactory(simulator, folderPath);
-                Aftermath aftermath = new MaxMinConnBwLpAllocator(simulator, network, null,
-                                new GlopLpSolver("/home/manuelgr/floodnsexample/external/glop_solver.py"));
+                Aftermath aftermath = new TMAllocator(simulator, network, folderPath, ROUTING_TYPE);
                 simulator.setup(network, aftermath, loggerFactory);
 
                 // Routing
