@@ -22,14 +22,16 @@ public class KSP_lp_minmax {
                 final int NUM_CITIES = Integer.parseInt(args[7]);
                 final String PATH_FILE = args[8];
                 final String ROUTING_TYPE = args[9];
+                final String GRAPH_DIR = args[10];
+                final int CURR_ITERATION = Integer.parseInt(args[11]);
 
                 String folderPath = "/home/manuelgr/master_thesis/Simulators/FloodNS/" + RESULTS_FOLDER_NAME + "/"
                                 + FOLDER_NAME;
                 String path_file = "/home/manuelgr/master_thesis/Simulators/FloodNS/" + PATH_FILE;
 
                 Topology topology = FileToTopologyConverter.convert(
-                                folderPath + "/topo/satellite_constellation.properties", UPDOWN_CAPACITY, ISL_CAPACITY,
-                                true, UPPER_SAT_ID);
+                                GRAPH_DIR + "/satellite_constellation_" + CURR_ITERATION + ".properties",
+                                UPDOWN_CAPACITY, ISL_CAPACITY, true, UPPER_SAT_ID);
                 Network network = topology.getNetwork();
 
                 // Create simulator
@@ -44,7 +46,7 @@ public class KSP_lp_minmax {
                                 KSP_K, UPPER_SAT_ID, NUM_CITIES, path_file, ROUTING_TYPE, folderPath);
 
                 // Traffic
-                Schedule schedule = new Schedule(folderPath + "/topo/trafficSchedule.properties", topology,
+                Schedule schedule = new Schedule(GRAPH_DIR + "/trafficSchedule.properties", topology,
                                 (long) DURATION * (long) 1e9);
                 simulator.insertEvents(schedule.getConnectionStartEvents(simulator, routingStrategy));
 
