@@ -44,7 +44,7 @@ public class KSP_v3 {
                                 KSP_K, UPPER_SAT_ID, NUM_CITIES, path_file, ROUTING_TYPE, folderPath);
 
                 // Traffic
-                Schedule schedule = new Schedule(GRAPH_DIR + "/trafficSchedule.properties", topology,
+                Schedule schedule = new Schedule(folderPath + "/topo/trafficSchedule.properties", topology,
                                 (long) DURATION * (long) 1e9);
                 simulator.insertEvents(schedule.getConnectionStartEvents(simulator, routingStrategy));
 

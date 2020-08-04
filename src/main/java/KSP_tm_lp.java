@@ -36,7 +36,7 @@ public class KSP_tm_lp {
 
                 // Create simulator
                 Simulator simulator = new Simulator(1e-4);
-                FileLoggerFactory loggerFactory = new FileLoggerFactory(simulator, folderPath);
+                FileLoggerFactory loggerFactory = new FileLoggerFactory(simulator, folderPath + "/" + CURR_ITERATION);
                 Aftermath aftermath = new MaxMinConnBwLpAllocator(simulator, network, null,
                                 new GlopLpSolver("/home/manuelgr/floodnsexample/external/glop_solver.py"));
                 simulator.setup(network, aftermath, loggerFactory);
@@ -46,7 +46,7 @@ public class KSP_tm_lp {
                                 KSP_K, UPPER_SAT_ID, NUM_CITIES, path_file, ROUTING_TYPE, folderPath);
 
                 // Traffic
-                Schedule schedule = new Schedule(GRAPH_DIR + "/trafficSchedule.properties", topology, 1);
+                Schedule schedule = new Schedule(folderPath + "/topo/trafficSchedule.properties", topology, 1);
                 simulator.insertEvents(schedule.getConnectionStartEvents(simulator, routingStrategy));
 
                 // Run the simulator
