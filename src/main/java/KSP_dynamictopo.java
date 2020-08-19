@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class KSP_ONE {
+public class KSP_dynamictopo {
     public static final int DURATION = 60;
     public static final int KSP_K = 1;
 

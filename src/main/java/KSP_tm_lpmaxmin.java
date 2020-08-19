@@ -1,14 +1,15 @@
 import ch.ethz.systems.floodns.core.Aftermath;
 import ch.ethz.systems.floodns.core.Network;
 import ch.ethz.systems.floodns.core.Simulator;
-import ch.ethz.systems.floodns.ext.allocator.SimpleMmfAllocator;
+import ch.ethz.systems.floodns.ext.allocator.MaxMinConnBwLpAllocator;
 import ch.ethz.systems.floodns.ext.basicsim.topology.FileToTopologyConverter;
 import ch.ethz.systems.floodns.ext.basicsim.topology.Topology;
 import ch.ethz.systems.floodns.ext.logger.file.FileLoggerFactory;
 import ch.ethz.systems.floodns.ext.basicsim.schedule.Schedule;
+import ch.ethz.systems.floodns.ext.lputils.GlopLpSolver;
 import ch.ethz.systems.floodns.ext.routing.KspMultiPathRoutingStrategy;
 
-public class KSP_tm_v3 {
+public class KSP_tm_lpmaxmin {
         public static void main(String[] args) {
 
                 final int DURATION = Integer.parseInt(args[0]);
@@ -36,7 +37,8 @@ public class KSP_tm_v3 {
                 // Create simulator
                 Simulator simulator = new Simulator(1e-4);
                 FileLoggerFactory loggerFactory = new FileLoggerFactory(simulator, folderPath + "/" + CURR_ITERATION);
-                Aftermath aftermath = new SimpleMmfAllocator(simulator, network);
+                Aftermath aftermath = new MaxMinConnBwLpAllocator(simulator, network, null,
+                                new GlopLpSolver("/home/manuelgr/floodnsexample/external/glop_solver.py"));
                 simulator.setup(network, aftermath, loggerFactory);
 
                 // Routing
@@ -48,7 +50,8 @@ public class KSP_tm_v3 {
                 simulator.insertEvents(schedule.getConnectionStartEvents(simulator, routingStrategy));
 
                 // Run the simulator
-                simulator.run(1);
+                simulator.run(1); // 5e9 time units ("ns")
+
                 loggerFactory.runCommandOnLogFolder("python3 /home/manuelgr/floodnsexample/external/analyze.py",
                                 UPPER_SAT_ID + " " + NUM_CITIES);
         }

@@ -9,7 +9,7 @@ import ch.ethz.systems.floodns.ext.basicsim.schedule.Schedule;
 import ch.ethz.systems.floodns.ext.lputils.GlopLpSolver;
 import ch.ethz.systems.floodns.ext.routing.KspMultiPathRoutingStrategy;
 
-public class KSP_lp_minmax {
+public class KSP_lpminmax {
         public static void main(String[] args) {
 
                 final int DURATION = Integer.parseInt(args[0]);
