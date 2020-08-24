@@ -17,13 +17,14 @@ public class KSP_withoutISL {
                 final long TBIT_TRAFFIC = (long) Double.parseDouble(args[4]);
                 final int ISL_CAPACITY = Integer.parseInt(args[5]);
 
-                String folderPath = "/home/manuelgr/master_thesis/Simulators/FloodNS/results_paper/" + RESULTS_FOLDER;
-                String pathfile = "/home/manuelgr/master_thesis/Simulators/FloodNS/results_paper/" + PATHFILE;
+                String folderPath = "/home/manuelgr/manuelgr_ms_2020/Simulators/FloodNS/results_paper/"
+                                + RESULTS_FOLDER;
+                String pathfile = "/home/manuelgr/manuelgr_ms_2020/Simulators/FloodNS/results_paper/" + PATHFILE;
                 String constpath = "";
                 if (RESULTS_FOLDER.contains("kuiper")) {
-                        constpath = "/home/manuelgr/master_thesis/Simulators/FloodNS/results_paper/kuiper";
+                        constpath = "/home/manuelgr/manuelgr_ms_2020/Simulators/FloodNS/results_paper/kuiper";
                 } else {
-                        constpath = "/home/manuelgr/master_thesis/Simulators/FloodNS/results_paper/starlink";
+                        constpath = "/home/manuelgr/manuelgr_ms_2020/Simulators/FloodNS/results_paper/starlink";
                 }
 
                 // Random number generators

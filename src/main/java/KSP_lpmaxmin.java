@@ -25,9 +25,9 @@ public class KSP_lpmaxmin {
                 final String GRAPH_DIR = args[10];
                 final int CURR_ITERATION = Integer.parseInt(args[11]);
 
-                String folderPath = "/home/manuelgr/master_thesis/Simulators/FloodNS/" + RESULTS_FOLDER_NAME + "/"
+                String folderPath = "/home/manuelgr/manuelgr_ms_2020/Simulators/FloodNS/" + RESULTS_FOLDER_NAME + "/"
                                 + FOLDER_NAME;
-                String path_file = "/home/manuelgr/master_thesis/Simulators/FloodNS/" + PATH_FILE;
+                String path_file = "/home/manuelgr/manuelgr_ms_2020/Simulators/FloodNS/" + PATH_FILE;
 
                 Topology topology = FileToTopologyConverter.convert(
                                 GRAPH_DIR + "/satellite_constellation_" + CURR_ITERATION + ".properties",
