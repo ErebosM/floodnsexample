@@ -25,9 +25,9 @@ public class KSP_tm_greedymaxmin {
                 final int CURR_ITERATION = Integer.parseInt(args[11]);
                 final String HOME_FOLDER = args[12];
 
-                String folderPath = HOME_FOLDER + "manuelgr_ms_2020/Simulators/FloodNS/" + RESULTS_FOLDER_NAME + "/"
+                String folderPath = HOME_FOLDER + "/manuelgr_ms_2020/Simulators/FloodNS/" + RESULTS_FOLDER_NAME + "/"
                                 + FOLDER_NAME;
-                String path_file = HOME_FOLDER + "manuelgr_ms_2020/Simulators/FloodNS/" + PATH_FILE;
+                String path_file = HOME_FOLDER + "/manuelgr_ms_2020/Simulators/FloodNS/" + PATH_FILE;
 
                 Topology topology = FileToTopologyConverter.convert(
                                 GRAPH_DIR + "/satellite_constellation_" + CURR_ITERATION + ".properties",
