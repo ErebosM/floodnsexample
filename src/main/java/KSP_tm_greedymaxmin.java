@@ -23,10 +23,11 @@ public class KSP_tm_greedymaxmin {
                 final String ROUTING_TYPE = args[9];
                 final String GRAPH_DIR = args[10];
                 final int CURR_ITERATION = Integer.parseInt(args[11]);
+                final String HOME_FOLDER = args[12];
 
-                String folderPath = "/home/manuelgr/manuelgr_ms_2020/Simulators/FloodNS/" + RESULTS_FOLDER_NAME + "/"
+                String folderPath = HOME_FOLDER + "manuelgr_ms_2020/Simulators/FloodNS/" + RESULTS_FOLDER_NAME + "/"
                                 + FOLDER_NAME;
-                String path_file = "/home/manuelgr/manuelgr_ms_2020/Simulators/FloodNS/" + PATH_FILE;
+                String path_file = HOME_FOLDER + "manuelgr_ms_2020/Simulators/FloodNS/" + PATH_FILE;
 
                 Topology topology = FileToTopologyConverter.convert(
                                 GRAPH_DIR + "/satellite_constellation_" + CURR_ITERATION + ".properties",
@@ -49,7 +50,7 @@ public class KSP_tm_greedymaxmin {
 
                 // Run the simulator
                 simulator.run(1);
-                loggerFactory.runCommandOnLogFolder("python3 /home/manuelgr/floodnsexample/external/analyze.py",
+                loggerFactory.runCommandOnLogFolder("python3 " + HOME_FOLDER + "/floodnsexample/external/analyze.py",
                                 UPPER_SAT_ID + " " + NUM_CITIES);
         }
 
