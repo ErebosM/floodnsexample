@@ -15,6 +15,7 @@ import java.util.Random;
 public class KSP_dynamictopo {
     public static final int DURATION = 60;
     public static final int KSP_K = 1;
+    final static int UPPER_SAT_ID = 1600;
 
     private static class AddEvent extends Event {
         private final int from;
@@ -194,7 +195,7 @@ public class KSP_dynamictopo {
                             + "/satellite_constellation.properties",
                     20, // 20 flow units / time unit ("bit/ns")
                     100, // 100 flow units / time unit ("bit/ns")
-                    true);
+                    true, UPPER_SAT_ID);
             Network network = topology.getNetwork();
 
             // Create simulator
